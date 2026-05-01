@@ -1,14 +1,17 @@
-const CACHE_NAME = 'tanks-v1';
+const CACHE_NAME = 'tanks-v2';
 
-self.addEventListener('install', (e) => {
-  e.waitUntil(
+// Упрощаем список до минимума
+const assets = [
+  'index.html',
+  'manifest.json',
+  'icon.png'
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll([
-        './',
-        'index.html',
-        'manifest.json',
-        'icon.png'
-      ]).catch(err => console.log('Кэширование не удалось:', err));
+      // Используем addAll, но если что-то пойдет не так, SW не умрет
+      return cache.addAll(assets).catch(err => console.log('Кэш пока не собран'));
     })
   );
 });
@@ -16,5 +19,16 @@ self.addEventListener('install', (e) => {
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request).catch(() => caches.match(event.request))
+  );
+});
+
+// Активация нового воркера и удаление старого кэша
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+      );
+    })
   );
 });

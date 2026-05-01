@@ -6,6 +6,7 @@
       "src": "./1777640411592.png",
       "type": "image/png",
       "sizes": "512x512"
+      "purpose": "any maskable"
     }
   ],
   "start_url": "./index.html",

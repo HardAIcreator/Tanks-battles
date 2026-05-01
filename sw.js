@@ -1,7 +1,7 @@
-self.addEventListener('install', (e) => {
-  self.skipWaiting();
+self.addEventListener('install', event => {
+  console.log('Service Worker installed');
 });
 
-self.addEventListener('fetch', (e) => {
-  e.respondWith(fetch(e.request));
+self.addEventListener('fetch', event => {
+  // Это нужно для работы PWA
 });

@@ -1,7 +1,16 @@
-self.addEventListener('install', event => {
-  console.log('Service Worker installed');
+const CACHE_NAME = 'tanks-v1';
+const assets = ['./', './index.html', './manifest.json', './icon.png'];
+
+self.addEventListener('install', (event) => {
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            return cache.addAll(assets);
+        })
+    );
 });
 
-self.addEventListener('fetch', event => {
-  // Это нужно для работы PWA
+self.addEventListener('fetch', (event) => {
+    event.respondWith(
+        fetch(event.request).catch(() => caches.match(event.request))
+    );
 });

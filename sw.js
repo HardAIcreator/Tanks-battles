@@ -1,4 +1,7 @@
-self.addEventListener('fetch', (event) => {
-  // Этот код позволяет игре работать оффлайн
+self.addEventListener('install', (e) => {
+  self.skipWaiting();
 });
- 
+
+self.addEventListener('fetch', (e) => {
+  e.respondWith(fetch(e.request));
+});

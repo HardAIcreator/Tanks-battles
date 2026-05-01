@@ -1,0 +1,17 @@
+{
+  "short_name": "Танки",
+  "name": "Танки: Битва Бонусов",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3209/3209149.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#0a0a0f",
+  "display": "standalone",
+  "scope": "./",
+  "theme_color": "#00e5ff",
+  "orientation": "landscape"
+}

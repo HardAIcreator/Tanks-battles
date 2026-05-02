@@ -10,7 +10,6 @@ body{background:#0a0a0f;width:100vw;height:100vh;overflow:hidden;font-family:'Co
 #gc{width:100%;height:100%;position:relative;}
 canvas{display:block;touch-action:none;}
 
-/* ── MENU ── */
 #menu{position:absolute;inset:0;background:radial-gradient(ellipse at center,#0d1b2a 0%,#020408 80%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;gap:14px;}
 #menu .tag{font-size:clamp(9px,2vw,12px);color:#ff6b35;letter-spacing:6px;}
 #menu h1{font-size:clamp(22px,6vw,46px);color:#00e5ff;text-shadow:0 0 20px #00e5ff,0 0 60px #0055ff;letter-spacing:4px;text-align:center;line-height:1.2;animation:glow 2.5s ease-in-out infinite;}
@@ -28,8 +27,7 @@ canvas{display:block;touch-action:none;}
 .mbtn.p{border-color:#cc44ff;color:#cc44ff}.mbtn.p::before{background:#cc44ff}
 .menu-sep{color:#333;font-size:11px;letter-spacing:4px;}
 
-/* ── ONLINE LOBBY ── */
-#lobby{position:absolute;inset:0;background:radial-gradient(ellipse at center,#0a1020 0%,#020408 80%);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:100;gap:16px;}
+#lobby{position:absolute;inset:0;background:radial-gradient(ellipse at center,#0a1020 0%,#020408 80%);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:101;gap:16px;pointer-events:auto !important;}
 #lobby h2{font-size:clamp(16px,4vw,28px);color:#cc44ff;letter-spacing:4px;text-shadow:0 0 20px #cc44ff;}
 .lobby-box{background:rgba(255,255,255,0.04);border:1px solid rgba(204,68,255,0.3);padding:16px 24px;min-width:260px;max-width:340px;width:90vw;}
 .lobby-input{background:rgba(0,0,0,0.5);border:1px solid #cc44ff44;color:#fff;font-family:'Courier New',monospace;font-size:13px;letter-spacing:2px;padding:8px 12px;width:100%;margin:6px 0;outline:none;}
@@ -39,7 +37,6 @@ canvas{display:block;touch-action:none;}
 #lobby-players{font-size:11px;color:#cc44ff;letter-spacing:1px;min-height:16px;text-align:center;}
 .lobby-label{font-size:10px;color:#666;letter-spacing:2px;margin-bottom:2px;}
 
-/* ── HUD ── */
 #hud{position:absolute;top:0;left:0;right:0;height:46px;display:none;align-items:center;justify-content:space-between;padding:0 10px;background:rgba(0,0,0,0.85);border-bottom:1px solid rgba(255,255,255,0.06);z-index:50;pointer-events:none;}
 .hp{display:flex;align-items:center;gap:7px;min-width:120px;}
 .hp.r{justify-content:flex-end;}
@@ -56,7 +53,6 @@ canvas{display:block;touch-action:none;}
 .ping-dot.bad{background:#ff4444;}
 #ping-disp{font-size:9px;color:#666;letter-spacing:1px;}
 
-/* ── MISC ── */
 #flash{position:absolute;inset:0;pointer-events:none;z-index:300;opacity:0;transition:opacity .08s;}
 #countdown{position:absolute;inset:0;display:none;align-items:center;justify-content:center;z-index:150;pointer-events:none;}
 #countdown span{font-size:clamp(60px,15vw,120px);color:#fff;text-shadow:0 0 40px #00e5ff;animation:cpop .9s ease;}
@@ -75,7 +71,6 @@ canvas{display:block;touch-action:none;}
   <canvas id="gameCanvas"></canvas>
   <div id="flash"></div>
 
-  <!-- MENU -->
   <div id="menu">
     <div class="tag">⚡ ARCADE ТАНКИ ⚡</div>
     <div class="tankanim"><span>🔵</span><span>🔴</span><span>🟣</span><span>🟢</span></div>
@@ -87,7 +82,6 @@ canvas{display:block;touch-action:none;}
     <button class="mbtn g" onclick="showLobby('join')">🔗 ВОЙТИ В ИГРУ</button>
   </div>
 
-  <!-- ONLINE LOBBY -->
   <div id="lobby">
     <h2 id="lobby-title">🌐 ОНЛАЙН</h2>
     <div class="lobby-box">
@@ -106,7 +100,6 @@ canvas{display:block;touch-action:none;}
     </div>
   </div>
 
-  <!-- HUD -->
   <div id="hud">
     <div class="hp" id="hud-left">
       <div class="pname" id="pname1">P1</div>
@@ -137,15 +130,11 @@ canvas{display:block;touch-action:none;}
   </div>
 </div>
 
-<!-- Firebase SDK (compat — без сборщика) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
 'use strict';
-// ══════════════════════════════════════════════════════════
-//  FIREBASE INIT
-// ══════════════════════════════════════════════════════════
 const fbCfg = {
   apiKey:"AIzaSyC2g0no1AD5iU_HpMsF67TO0Co7nDyrH2A",
   authDomain:"tanks-online-9b1e7.firebaseapp.com",
@@ -158,9 +147,6 @@ const fbCfg = {
 firebase.initializeApp(fbCfg);
 const db = firebase.database();
 
-// ══════════════════════════════════════════════════════════
-//  AUDIO — процедурный синтез
-// ══════════════════════════════════════════════════════════
 let _ac=null;
 const AC=()=>{if(!_ac)_ac=new(window.AudioContext||window.webkitAudioContext)();return _ac;};
 function snd_shoot(laser){
@@ -183,15 +169,8 @@ function snd_ricco(){try{const ac=AC(),o=ac.createOscillator(),g=ac.createGain()
 function snd_quake(){try{const ac=AC(),len=1.5,buf=ac.createBuffer(1,ac.sampleRate*len,ac.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*0.5;const src=ac.createBufferSource(),g=ac.createGain(),f=ac.createBiquadFilter();f.type='lowpass';f.frequency.value=120;src.buffer=buf;src.connect(f);f.connect(g);g.connect(ac.destination);g.gain.setValueAtTime(0.85,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+len);src.start();}catch(e){}}
 function snd_teleport(){try{const ac=AC();for(let i=0;i<8;i++){const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.setValueAtTime(200+i*200,ac.currentTime+i*0.04);g.gain.setValueAtTime(0.08,ac.currentTime+i*0.04);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+i*0.04+0.08);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+i*0.04);o.stop(ac.currentTime+i*0.04+0.08);}}catch(e){}}
 
-// ══════════════════════════════════════════════════════════
-//  CONSTANTS
-// ══════════════════════════════════════════════════════════
-const TILE=48,WALL_HP=3,TANK_SPEED=130,BOT_SPEED=110,BULLET_SPEED=300,
-      BONUS_INT=9000,BONUS_DUR=9000,MAX_LIVES=3;
+const TILE=48,WALL_HP=3,TANK_SPEED=130,BOT_SPEED=110,BULLET_SPEED=300,BONUS_INT=9000,BONUS_DUR=9000,MAX_LIVES=3;
 
-// ══════════════════════════════════════════════════════════
-//  PLAYER COLORS  [body, accent, name]
-// ══════════════════════════════════════════════════════════
 const P_COLORS=[
   ['#00e5ff','#0077cc','СИНИЙ'],
   ['#ff6b35','#cc3300','КРАСНЫЙ'],
@@ -199,9 +178,6 @@ const P_COLORS=[
   ['#00ff88','#008844','ЗЕЛЁНЫЙ'],
 ];
 
-// ══════════════════════════════════════════════════════════
-//  GLOBALS
-// ══════════════════════════════════════════════════════════
 let canvas,ctx,animFrame;
 let gameState='menu',lastTime=0,gameTime=0;
 let bonusTimer=0;
@@ -213,20 +189,16 @@ let shakeTimer=0;
 let weatherType='none',weatherTimer=0,weatherParts=[];
 let quakeTimer=0,lastEventAt=0;
 
-// Online
 let onlineMode=false;
-let myPid='';        // local player id  (firebase key)
-let roomRef=null;    // reference to /rooms/<code>
+let myPid='';
+let roomRef=null;
 let roomCode='';
 let isHost=false;
-let myPlayerIndex=0; // which slot 0-3
-let remoteStates={};  // pid -> {x,y,angle,lives,bonus,frozen,shield,hitFlash,kills}
+let myPlayerIndex=0;
+let remoteStates={};
 let fbPingStart=0,fbPing=0;
-let onlineInputSeq=0; // для дедупликации
+let onlineInputSeq=0;
 
-// ══════════════════════════════════════════════════════════
-//  MAP GENERATION  (seeded — одинакова у всех в комнате)
-// ══════════════════════════════════════════════════════════
 function seededRand(seed){
   let s=seed;
   return ()=>{s=(s*1664525+1013904223)&0xffffffff;return(s>>>0)/0xffffffff;};
@@ -242,9 +214,6 @@ function genMap(w,h,seed=42){
   return m;
 }
 
-// ══════════════════════════════════════════════════════════
-//  A*
-// ══════════════════════════════════════════════════════════
 function findPath(sx,sy,ex,ey){
   if(sx===ex&&sy===ey)return null;
   const open=[{x:sx,y:sy,g:0,h:Math.abs(sx-ex)+Math.abs(sy-ey),p:null}];
@@ -265,9 +234,6 @@ function findPath(sx,sy,ex,ey){
   return null;
 }
 
-// ══════════════════════════════════════════════════════════
-//  PARTICLES & FX
-// ══════════════════════════════════════════════════════════
 function spawnP(x,y,color,n,speed,life,grav=0){
   for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=speed*(0.4+Math.random()*0.6);particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life,maxLife:life,color,size:2+Math.random()*4,grav});}
 }
@@ -276,16 +242,12 @@ function shake(n=1){shakeTimer=Math.max(shakeTimer,0.28*n);}
 function flash(col='#fff',ms=100){const f=document.getElementById('flash');f.style.background=col;f.style.opacity='0.3';setTimeout(()=>f.style.opacity='0',ms);}
 function addKillFeed(txt){const kf=document.getElementById('kill-feed');const d=document.createElement('div');d.className='kf-item';d.textContent=txt;kf.appendChild(d);setTimeout(()=>d.remove(),3100);}
 
-// ══════════════════════════════════════════════════════════
-//  BONUSES — расширенный набор
-// ══════════════════════════════════════════════════════════
 const B_TYPES=['triple','armor','laser','speed','mine','magnet','freeze','ricochet','nuke','teleport','ghost','rapid'];
 const B_COL={triple:'#ffd700',armor:'#00ffff',laser:'#ff00ff',speed:'#00ff88',mine:'#ff4444',magnet:'#cc44ff',freeze:'#88ddff',ricochet:'#ffaa00',nuke:'#ff3300',teleport:'#44ffff',ghost:'#aaaaff',rapid:'#ffee00'};
 const B_SYM={triple:'✦',armor:'◆',laser:'⚡',speed:'▶▶',mine:'💣',magnet:'🧲',freeze:'❄',ricochet:'↩',nuke:'☢',teleport:'✦✦',ghost:'👻',rapid:'⚡⚡'};
 const B_NAME={triple:'ТРИПЛ',armor:'БРОНЯ',laser:'ЛАЗЕР',speed:'ТУРБО',mine:'МИНЫ',magnet:'МАГНИТ',freeze:'ЗАМОРОЗКА',ricochet:'РИКОШЕТ',nuke:'ЯДЕРКА',teleport:'ТЕЛЕПОРТ',ghost:'ПРИЗРАК',rapid:'СКОРОСТРЕЛ'};
 
 function spawnBonus(){
-  // Хост спавнит бонусы (и при онлайн-игре пишет в Firebase)
   let tries=0,bx,by;
   do{bx=1+Math.floor(Math.random()*(mapW-2));by=1+Math.floor(Math.random()*(mapH-2));tries++;}
   while(mapData[by][bx].type!=='empty'&&tries<80);
@@ -299,9 +261,6 @@ function spawnBonus(){
   }
 }
 
-// ══════════════════════════════════════════════════════════
-//  TANK CLASS
-// ══════════════════════════════════════════════════════════
 class Tank{
   constructor(x,y,cidx,bot,pidx,name){
     this.x=x;this.y=y;this.angle=pidx===0?0:pidx===1?Math.PI:pidx===2?Math.PI/2:-Math.PI/2;
@@ -324,7 +283,7 @@ class Tank{
     this.botState='hunt';this.dodgeAng=0;this.dodgeT=0;
     this.kills=0;this.shots=0;
     this.tracks=[];this.trackT=0;
-    this.remote=false; // если это удалённый игрок
+    this.remote=false;
   }
   get tx(){return Math.floor(this.x/TILE);}
   get ty(){return Math.floor(this.y/TILE);}
@@ -358,7 +317,6 @@ class Tank{
   _doNuke(){
     flash('#ffff00',400);shake(3);snd_explode(true);
     spawnTxt(this.x,this.y-50,'☢ НЮКЕР!','#ff3300',24);
-    // Урон всем в радиусе 4 тайлов
     for(const ot of tanks){
       if(ot===this)continue;
       const dx=ot.x-this.x,dy=ot.y-this.y;
@@ -367,7 +325,6 @@ class Tank{
         spawnP(ot.x,ot.y,'#ff3300',20,150,0.8);
       }
     }
-    // Снос стен вокруг
     for(let dy2=-3;dy2<=3;dy2++) for(let dx2=-3;dx2<=3;dx2++){
       const tx2=this.tx+dx2,ty2=this.ty+dy2;
       if(tx2>=0&&ty2>=0&&tx2<mapW&&ty2<mapH&&mapData[ty2][tx2].type==='brick')
@@ -405,7 +362,7 @@ class Tank{
   }
 
   update(dt){
-    if(this.remote)return; // remote tanks обновляются через Firebase
+    if(this.remote)return;
     if(this.respawning){this.respawnT-=dt;if(this.respawnT<=0){this.respawning=false;this.alive=true;}return;}
     if(!this.alive)return;
     if(this.scd>0)this.scd-=dt;
@@ -451,8 +408,22 @@ class Tank{
   }
 
   tryMove(dx,dy){
-    if(this.ghost){this.x+=dx;this.y+=dy;return;} // призрак проходит сквозь стены
-    const r=18,nx=this.x+dx,ny=this.y+dy;
+    const r=18;
+    const nx=this.x+dx;
+    const ny=this.y+dy;
+    if(this.ghost){
+      const canMove=(x,y)=>{
+        const tx=Math.floor(x/TILE);
+        const ty=Math.floor(y/TILE);
+        if(tx<0||ty<0||tx>=mapW||ty>=mapH)return false;
+        const cell=mapData[ty][tx];
+        return !cell||cell.type!=='steel';
+      };
+      if(canMove(nx-r,ny-r)&&canMove(nx+r,ny-r)&&canMove(nx-r,ny+r)&&canMove(nx+r,ny+r)){this.x=nx;this.y=ny;}
+      else if(canMove(nx-r,this.y-r)&&canMove(nx+r,this.y-r)&&canMove(nx-r,this.y+r)&&canMove(nx+r,this.y+r)){this.x=nx;}
+      else if(canMove(this.x-r,ny-r)&&canMove(this.x+r,ny-r)&&canMove(this.x-r,ny+r)&&canMove(this.x+r,ny+r)){this.y=ny;}
+      return;
+    }
     const ok=(x,y)=>!wallAt(x,y);
     if(ok(nx-r,ny-r)&&ok(nx+r,ny-r)&&ok(nx-r,ny+r)&&ok(nx+r,ny+r)){this.x=nx;this.y=ny;}
     else if(ok(nx-r,this.y-r)&&ok(nx+r,this.y-r)&&ok(nx-r,this.y+r)&&ok(nx+r,this.y+r)){this.x=nx;}
@@ -461,12 +432,11 @@ class Tank{
 
   hit(dmg,from){
     if(this.shield){spawnP(this.x,this.y,'#00ffff',10,90,0.4);snd_shield();return 'bounced';}
-    if(this.ghost)return 'miss'; // призрак неуязвим
+    if(this.ghost)return 'miss';
     this.hitFlash=0.14;this.lives=Math.max(0,this.lives-dmg);
     spawnP(this.x,this.y,this.col,16,115,0.65);
     updateLivesHUD();
     if(onlineMode&&isHost&&roomRef){
-      // Синхронизируем жизни через Firebase
       fbSyncTankLives(this.pidx,this.lives);
     }
     if(this.lives<=0){this.die(from);return 'dead';}
@@ -513,13 +483,11 @@ class Tank{
     if(this.bonus==='magnet'){ctx.shadowColor='#cc44ff';ctx.shadowBlur=22;ctx.strokeStyle='#cc44ff';ctx.lineWidth=2;const t2=Date.now()*0.005;for(let a=0;a<Math.PI*2;a+=Math.PI/3){const r2=22+3*Math.sin(t2+a);ctx.beginPath();ctx.arc(Math.cos(a)*r2,Math.sin(a)*r2,3,0,Math.PI*2);ctx.stroke();}}
     ctx.restore();
     if(this.frozen){ctx.save();ctx.globalAlpha=0.28;ctx.fillStyle='#88ddff';ctx.translate(this.x,this.y);ctx.rotate(this.angle);rr(ctx,-22,-18,44,36,5);ctx.fill();ctx.restore();}
-    // Name tag (онлайн)
     if(onlineMode||tanks.length>2){
       ctx.save();ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fillRect(this.x-20,this.y-34,40,13);
       ctx.fillStyle=this.col;ctx.font='bold 9px Courier New';ctx.textAlign='center';ctx.textBaseline='middle';
       ctx.fillText(this.name.substring(0,8),this.x,this.y-27);ctx.restore();
     }
-    // HP bar
     ctx.save();
     const bw=40,bh=4,bx2=this.x-bw/2,by2=this.y+24;
     ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillRect(bx2,by2,bw,bh);
@@ -528,18 +496,34 @@ class Tank{
   }
 }
 
-// ══════════════════════════════════════════════════════════
-//  BULLETS
-// ══════════════════════════════════════════════════════════
 function spawnBullet(tank,angle){
-  const b={x:tank.x+Math.cos(angle)*35,y:tank.y+Math.sin(angle)*35,vx:Math.cos(angle)*BULLET_SPEED,vy:Math.sin(angle)*BULLET_SPEED,owner:tank,alive:true,trail:[],age:0,ricochet:tank.ricochet,bounces:0};
-  bullets.push(b);
+  const b={
+    x:tank.x+Math.cos(angle)*35,
+    y:tank.y+Math.sin(angle)*35,
+    vx:Math.cos(angle)*BULLET_SPEED,
+    vy:Math.sin(angle)*BULLET_SPEED,
+    owner:tank,
+    alive:true,
+    trail:[],
+    age:0,
+    ricochet:tank.ricochet,
+    bounces:0,
+    fbid:''
+  };
   if(onlineMode&&isHost&&roomRef){
-    // Хост транслирует пулю в Firebase для синхронизации
     const bid='blt'+Date.now()+Math.floor(Math.random()*1000);
     b.fbid=bid;
+    roomRef.child('bullets/'+bid).set({
+      x:Math.round(b.x),y:Math.round(b.y),
+      vx:b.vx,vy:b.vy,
+      ownerIdx:tank.pidx,
+      alive:true,age:0,
+      ricochet:b.ricochet
+    });
   }
+  bullets.push(b);
 }
+
 function fireLaser(tank){
   snd_shoot(true);flash('#ff00ff',160);shake(1.1);
   const a=tank.angle,dx=Math.cos(a),dy=Math.sin(a);
@@ -558,9 +542,6 @@ function fireLaser(tank){
   spawnP(x,y,'#ff00ff',22,180,0.9);spawnTxt(tank.x,tank.y-42,'⚡ЛАЗЕР!','#ff00ff',18);
 }
 
-// ══════════════════════════════════════════════════════════
-//  MINES
-// ══════════════════════════════════════════════════════════
 function layMine(tank){
   mines.push({x:tank.x,y:tank.y,owner:tank,armed:false,armT:1.5,alive:true,age:0,blink:0});
   spawnTxt(tank.x,tank.y-30,'💣 МИНА!','#ff4444',14);
@@ -576,22 +557,15 @@ function updateMines(dt){
 }
 function drawMines(){for(const m of mines){if(!m.alive)continue;const pulse=m.armed?(0.65+0.35*Math.sin(m.blink*(m.armed?8:3))):0.5;ctx.save();ctx.globalAlpha=pulse;ctx.shadowColor=m.armed?'#ff4444':'#888';ctx.shadowBlur=m.armed?16:4;ctx.fillStyle=m.armed?'#ff3333':'#555';ctx.beginPath();ctx.arc(m.x,m.y,9,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 11px Courier New';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('!',m.x,m.y);ctx.restore();}}
 
-// ══════════════════════════════════════════════════════════
-//  UTILS
-// ══════════════════════════════════════════════════════════
 function wallAt(x,y){const tx=Math.floor(x/TILE),ty=Math.floor(y/TILE);if(tx<0||ty<0||tx>=mapW||ty>=mapH)return true;return mapData[ty][tx].type!=='empty';}
 function angDiff(a,b){let d=a-b;while(d>Math.PI)d-=Math.PI*2;while(d<-Math.PI)d+=Math.PI*2;return d;}
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.arcTo(x+w,y,x+w,y+r,r);c.lineTo(x+w,y+h-r);c.arcTo(x+w,y+h,x+w-r,y+h,r);c.lineTo(x+r,y+h);c.arcTo(x,y+h,x,y+h-r,r);c.lineTo(x,y+r);c.arcTo(x,y,x+r,y,r);c.closePath();}
 function genCode(){return Math.random().toString(36).substring(2,8).toUpperCase();}
 
-// ══════════════════════════════════════════════════════════
-//  FIREBASE SYNC HELPERS
-// ══════════════════════════════════════════════════════════
 let fbUploadTimer=0;
 
 function fbSyncMap(){
   if(!roomRef||!isHost)return;
-  // Компактная сериализация карты: только изменённые кирпичи
   const bricks={};
   for(let y=0;y<mapH;y++)for(let x=0;x<mapW;x++){
     const c=mapData[y][x];
@@ -617,21 +591,17 @@ function fbSyncTankLives(pidx,lives){
   roomRef.child('lives/'+pidx).set(lives);
 }
 
-// Upload my position  (вызывается каждый кадр, но throttled)
 function fbUploadMe(dt){
   if(!onlineMode||!roomRef||!myPid)return;
   fbUploadTimer-=dt;
   if(fbUploadTimer>0)return;
-  fbUploadTimer=0.05; // 20 fps upload
+  fbUploadTimer=0.05;
   const me=tanks[myPlayerIndex];
   if(!me||!me.alive)return;
   const data={x:Math.round(me.x),y:Math.round(me.y),angle:+me.angle.toFixed(3),lives:me.lives,bonus:me.bonus||'',frozen:me.frozen?1:0,shield:me.shield?1:0,hitFlash:me.hitFlash>0?1:0,kills:me.kills,ts:firebase.database.ServerValue.TIMESTAMP};
   roomRef.child('players/'+myPid).update(data);
 }
 
-// ══════════════════════════════════════════════════════════
-//  JOYSTICK
-// ══════════════════════════════════════════════════════════
 class Joystick{
   constructor(bx,by,r,type,pidx){this.bx=bx;this.by=by;this.r=r;this.type=type;this.pidx=pidx;this.active=false;this.tid=null;this.sx=0;this.sy=0;this.dx=0;this.dy=0;}
   start(id,x,y){this.active=true;this.tid=id;this.move(x,y);}
@@ -640,11 +610,7 @@ class Joystick{
   draw(){const col=P_COLORS[this.pidx%P_COLORS.length][0];ctx.save();ctx.beginPath();ctx.arc(this.bx,this.by,this.r,0,Math.PI*2);ctx.strokeStyle=col+'55';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle=col+'0d';ctx.fill();ctx.strokeStyle=col+'18';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(this.bx-this.r,this.by);ctx.lineTo(this.bx+this.r,this.by);ctx.moveTo(this.bx,this.by-this.r);ctx.lineTo(this.bx,this.by+this.r);ctx.stroke();const sx=this.bx+this.sx,sy=this.by+this.sy;ctx.beginPath();ctx.arc(sx,sy,this.r*0.31,0,Math.PI*2);const g=ctx.createRadialGradient(sx,sy,2,sx,sy,this.r*0.31);g.addColorStop(0,col+(this.active?'ff':'88'));g.addColorStop(1,col+(this.active?'99':'33'));ctx.fillStyle=g;ctx.fill();ctx.strokeStyle=col+(this.active?'cc':'44');ctx.lineWidth=2;ctx.stroke();ctx.fillStyle=col+(this.active?'ff':'77');ctx.font=`bold ${Math.round(this.r*0.3)}px Courier New`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(this.type==='shoot'?'🔥':'✛',sx,sy);ctx.restore();}
 }
 
-// ══════════════════════════════════════════════════════════
-//  HUD
-// ══════════════════════════════════════════════════════════
 function updateLivesHUD(){
-  // Обновляем для первых двух слотов
   for(let i=0;i<Math.min(tanks.length,2);i++){
     const el=document.getElementById('lives-'+i);if(!el)continue;
     el.innerHTML='';
@@ -658,13 +624,10 @@ function updateBonusHUD(pidx,type){
 }
 function updateTimer(){const s=Math.floor(gameTime),m=Math.floor(s/60);document.getElementById('htimer').textContent=String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
 
-// ══════════════════════════════════════════════════════════
-//  WEATHER / EVENTS
-// ══════════════════════════════════════════════════════════
 function tryRandomEvent(){
   if(gameTime-lastEventAt<20)return;
   if(Math.random()>0.3)return;
-  if(onlineMode&&!isHost)return; // только хост решает события
+  if(onlineMode&&!isHost)return;
   lastEventAt=gameTime;
   const ev=['fog','earthquake','bonus_rain','meteor','none','none'][Math.floor(Math.random()*6)];
   if(ev==='fog'){weatherType='fog';weatherTimer=10;spawnTxt(canvas.width/2,canvas.height*0.4,'☁ ТУМАН!','#aabbcc',22);}
@@ -687,9 +650,6 @@ function updateWeather(dt){
 }
 function drawWeather(){if(weatherType==='fog'){ctx.save();ctx.fillStyle='rgba(160,185,210,0.14)';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.strokeStyle='rgba(170,200,230,0.2)';ctx.lineWidth=1;for(const w of weatherParts){ctx.globalAlpha=w.life/w.maxLife*0.28;ctx.beginPath();ctx.moveTo(w.x,w.y-7);ctx.lineTo(w.x,w.y);ctx.stroke();}ctx.globalAlpha=1;ctx.restore();}}
 
-// ══════════════════════════════════════════════════════════
-//  ONLINE LOBBY UI
-// ══════════════════════════════════════════════════════════
 let lobbyAction_mode='create';
 let lobbyPlayersRef=null;
 let lobbyPing=null;
@@ -727,7 +687,6 @@ function doCreateRoom(name){
   const mW=Math.max(Math.floor(W/TILE),6),mH=Math.max(Math.floor(H/TILE),5);
   const seed=Math.floor(Math.random()*99999);
 
-  // Данные хоста
   const playerData={name,color:0,index:0,lives:MAX_LIVES,x:TILE*2+TILE/2,y:TILE*2+TILE/2,angle:0,bonus:'',frozen:0,shield:0,hitFlash:0,kills:0,ts:firebase.database.ServerValue.TIMESTAMP};
   roomRef.child('players/'+myPid).set(playerData);
   roomRef.child('players/'+myPid).onDisconnect().remove();
@@ -738,7 +697,6 @@ function doCreateRoom(name){
   document.getElementById('btn-lobby-go').textContent='▶ НАЧАТЬ';
   document.getElementById('btn-lobby-go').onclick=()=>doStartOnlineGame();
 
-  // Слушаем игроков
   watchLobbyPlayers(code);
   isHost=true;myPlayerIndex=0;
 }
@@ -752,7 +710,6 @@ function doJoinRoom(name,code){
     roomCode=code;roomRef=db.ref('rooms/'+code);myPid=db.ref().push().key;
     isHost=false;
 
-    // Считаем сколько игроков уже есть
     roomRef.child('players').once('value',snap2=>{
       const existing=snap2.val()||{};
       const idx=Object.keys(existing).length;
@@ -764,7 +721,6 @@ function doJoinRoom(name,code){
       roomRef.child('players/'+myPid).onDisconnect().remove();
       document.getElementById('lobby-status').textContent='✅ В комнате '+code+'\nОжидаем старт от хоста...';
       watchLobbyPlayers(code);
-      // Слушаем старт
       roomRef.child('meta/state').on('value',s=>{if(s.val()==='playing')beginOnlineGame(meta);});
     });
   });
@@ -790,7 +746,6 @@ function beginOnlineGame(meta){
   document.getElementById('lobby').style.display='none';
   if(lobbyPlayersRef){lobbyPlayersRef.off();lobbyPlayersRef=null;}
   onlineMode=true;
-  // Инит карты по seed хоста
   const W=window.innerWidth,H=window.innerHeight;
   canvas=document.getElementById('gameCanvas');ctx=canvas.getContext('2d');
   canvas.width=W;canvas.height=H;
@@ -800,13 +755,11 @@ function beginOnlineGame(meta){
   particles=[];bullets=[];bonusItems=[];tanks=[];mines=[];floatingTexts=[];weatherParts=[];
   gameTime=0;shakeTimer=0;weatherType='none';lastEventAt=0;bonusTimer=BONUS_INT;
 
-  // Создаём свой танк
   const SPAWNS=[[TILE*2+TILE/2,TILE*2+TILE/2],[((mapW-3)*TILE)+TILE/2,((mapH-3)*TILE)+TILE/2],[TILE*2+TILE/2,((mapH-3)*TILE)+TILE/2],[((mapW-3)*TILE)+TILE/2,TILE*2+TILE/2]];
   const me=new Tank(SPAWNS[myPlayerIndex][0],SPAWNS[myPlayerIndex][1],myPlayerIndex,false,myPlayerIndex,'');
   me.name=(document.getElementById('inp-name').value||'ИГРОК').toUpperCase().substring(0,12);
   tanks[myPlayerIndex]=me;
 
-  // Слушаем других игроков
   roomRef.child('players').on('value',snap=>{
     const players=snap.val()||{};
     for(const[pid,data]of Object.entries(players)){
@@ -828,12 +781,10 @@ function beginOnlineGame(meta){
       rt.kills=data.kills||0;
       updateLivesHUD();
     }
-    // Удаляем ушедших
     const keys=Object.keys(players);
     for(let i=0;i<tanks.length;i++){if(tanks[i]&&tanks[i].remote){const pid=Object.entries(players).find(([k,v])=>v.index===i)?.[0];if(!pid){tanks[i].lives=0;tanks[i].alive=false;updateLivesHUD();}}}
   });
 
-  // Слушаем бонусы (хост записывает, все читают)
   roomRef.child('bonuses').on('child_added',snap=>{
     const d=snap.val();const bid=snap.key;
     if(!bonusItems.find(b=>b.id===bid))
@@ -843,10 +794,8 @@ function beginOnlineGame(meta){
     const bid=snap.key;const b=bonusItems.find(b=>b.id===bid);if(b)b.alive=false;
   });
 
-  // Слушаем патч карты
   roomRef.child('mapPatch').on('value',snap=>{if(!isHost)fbApplyMapPatch(snap.val());});
 
-  // Слушаем жизни
   roomRef.child('lives').on('value',snap=>{
     const lives=snap.val();if(!lives)return;
     for(const[idx,v]of Object.entries(lives)){
@@ -854,30 +803,74 @@ function beginOnlineGame(meta){
     }
   });
 
-  // Событие выстрела (хост обрабатывает, не-хост транслирует команду)
   if(!isHost){
-    roomRef.child('shots').on('child_added',snap=>{
-      // только для отображения на своём экране, урон считает хост
+    roomRef.child('bullets').on('child_added',snap=>{
+      const d=snap.val();
+      const bid=snap.key;
+      if(!d||!d.alive)return;
+      if(bullets.find(b=>b.fbid===bid))return;
+      const owner=tanks[d.ownerIdx];
+      if(!owner)return;
+      const b={
+        x:d.x,y:d.y,
+        vx:d.vx,vy:d.vy,
+        owner:owner,
+        alive:true,
+        trail:[],
+        age:d.age||0,
+        ricochet:d.ricochet,
+        bounces:0,
+        fbid:bid
+      };
+      bullets.push(b);
+    });
+    roomRef.child('bullets').on('child_changed',snap=>{
+      const d=snap.val();
+      const b=bullets.find(b=>b.fbid===snap.key);
+      if(b&&d){
+        b.x=d.x;b.y=d.y;
+        b.alive=d.alive;
+      }
+    });
+    roomRef.child('bullets').on('child_removed',snap=>{
+      const b=bullets.find(b=>b.fbid===snap.key);
+      if(b)b.alive=false;
     });
   }
 
-  // Пинг
+  if(isHost){
+    setInterval(()=>{
+      for(const b of bullets){
+        if(b.alive&&b.fbid&&roomRef){
+          roomRef.child('bullets/'+b.fbid).update({
+            x:Math.round(b.x),y:Math.round(b.y),
+            alive:b.alive,age:b.age
+          });
+        }
+        if(!b.alive&&b.fbid&&roomRef){
+          roomRef.child('bullets/'+b.fbid).remove();
+          b.fbid='';
+        }
+      }
+    },50);
+  }
+
   setInterval(()=>{fbPingStart=Date.now();roomRef.child('ping/'+myPid).set(Date.now());},2000);
   roomRef.child('ping').on('child_changed',()=>{if(fbPingStart){fbPing=Date.now()-fbPingStart;}});
+
+  const jr=Math.min(58,W*0.076),jm=jr+16;
+  joysticks={};
+  joysticks['p'+myPlayerIndex+'Move']=new Joystick(jm,H-jm,jr,'move',myPlayerIndex);
+  joysticks['p'+myPlayerIndex+'Shoot']=new Joystick(W-jm,H-jm,jr,'shoot',myPlayerIndex);
 
   document.getElementById('hud').style.display='flex';
   document.getElementById('pname1').textContent=me.name;
   document.getElementById('pname2').textContent='';
-  document.getElementById('p2-name')&&(document.getElementById('pname2').textContent='');
-
-  setupInput();currentMode=99; // online mode
+  setupInput();currentMode=99;
   gameState='countdown';
   doCountdown(()=>{gameState='playing';lastTime=performance.now();if(animFrame)cancelAnimationFrame(animFrame);gameLoop(lastTime);});
 }
 
-// ══════════════════════════════════════════════════════════
-//  LOCAL GAME INIT
-// ══════════════════════════════════════════════════════════
 function startGame(mode){
   try{AC().resume();}catch(e){}
   onlineMode=false;currentMode=mode;
@@ -888,7 +881,8 @@ function startGame(mode){
   canvas=document.getElementById('gameCanvas');ctx=canvas.getContext('2d');
   const W=window.innerWidth,H=window.innerHeight;canvas.width=W;canvas.height=H;
   mapW=Math.max(Math.floor(W/TILE),6);mapH=Math.max(Math.floor(H/TILE),5);
-  mapData=genMap(mapW,mapH,Date.now()%99999);
+  const seed=Math.floor(Math.random()*99999);
+  mapData=genMap(mapW,mapH,seed);
   particles=[];bullets=[];bonusItems=[];tanks=[];mines=[];floatingTexts=[];weatherParts=[];
   gameTime=0;shakeTimer=0;weatherType='none';lastEventAt=0;bonusTimer=BONUS_INT;
 
@@ -915,16 +909,27 @@ function doCountdown(cb){
   const step=()=>{if(i>=nums.length){el.style.display='none';cb();return;}num.textContent=nums[i];num.style.color=nums[i]==='GO!'?'#00ff88':'#ffffff';num.style.animation='none';void num.offsetWidth;num.style.animation='cpop .9s ease';snd_countdown(nums[i]==='GO!');i++;setTimeout(step,900);};step();
 }
 
-// ══════════════════════════════════════════════════════════
-//  INPUT
-// ══════════════════════════════════════════════════════════
 function setupInput(){
   canvas.ontouchstart=(e)=>{
-    e.preventDefault();try{AC().resume();}catch(ex){}
+    if(gameState==='playing'||gameState==='countdown'){
+      e.preventDefault();
+    }
+    try{AC().resume();}catch(ex){}
     for(const t of e.changedTouches){
-      const x=t.clientX,y=t.clientY;let hit=false;
-      for(const jj of Object.values(joysticks)){if(jj.active)continue;const dx=x-jj.bx,dy=y-jj.by;if(Math.sqrt(dx*dx+dy*dy)<jj.r*1.7){jj.start(t.identifier,x,y);hit=true;break;}}
-      if(!hit&&(currentMode===1||currentMode===99)&&tanks[myPlayerIndex]?.alive)tanks[myPlayerIndex].shoot();
+      const x=t.clientX,y=t.clientY;let hitJoystick=false;
+      for(const jj of Object.values(joysticks)){
+        if(jj.active)continue;
+        const dx=x-jj.bx,dy=y-jj.by;
+        if(Math.sqrt(dx*dx+dy*dy)<jj.r*1.7){
+          jj.start(t.identifier,x,y);
+          hitJoystick=true;
+          break;
+        }
+      }
+      if(!hitJoystick&&Object.keys(joysticks).length>0&&tanks[myPlayerIndex]?.alive){
+        tanks[myPlayerIndex].shoot();
+        if(onlineMode&&roomRef)fbShotEvent(tanks[myPlayerIndex]);
+      }
     }
   };
   canvas.ontouchmove=(e)=>{e.preventDefault();for(const t of e.changedTouches)for(const jj of Object.values(joysticks))if(jj.tid===t.identifier)jj.move(t.clientX,t.clientY);};
@@ -936,14 +941,10 @@ function setupInput(){
 }
 
 function fbShotEvent(tank){
-  // Посылаем событие выстрела в Firebase
   if(!roomRef)return;
   roomRef.child('shots').push({x:Math.round(tank.x),y:Math.round(tank.y),angle:+tank.angle.toFixed(3),pidx:myPlayerIndex,ts:firebase.database.ServerValue.TIMESTAMP});
 }
 
-// ══════════════════════════════════════════════════════════
-//  GAME LOOP
-// ══════════════════════════════════════════════════════════
 function gameLoop(ts){
   if(gameState!=='playing')return;
   animFrame=requestAnimationFrame(gameLoop);
@@ -957,7 +958,6 @@ function update(dt){
   const keys=window._keys||{};
   const myTank=tanks[myPlayerIndex];
 
-  // P1 keyboard
   if(myTank?.alive&&!myTank.respawning&&!myTank.frozen){
     let kx=0,ky=0;
     if(keys['a']||keys['ArrowLeft'])kx=-1;if(keys['d']||keys['ArrowRight'])kx=1;
@@ -965,7 +965,6 @@ function update(dt){
     if(kx||ky){myTank.angle=Math.atan2(ky,kx);myTank.tryMove(Math.cos(myTank.angle)*myTank.spd*dt,Math.sin(myTank.angle)*myTank.spd*dt);}
     if(keys[' ']||keys['Enter'])myTank.shoot();
   }
-  // P2 keyboard (локальный)
   if(currentMode===2&&tanks[1]?.alive&&!tanks[1].respawning&&!tanks[1].frozen){
     let kx=0,ky=0;if(keys['j'])kx=-1;if(keys['l'])kx=1;if(keys['i'])ky=-1;if(keys['k'])ky=1;
     if(kx||ky){tanks[1].angle=Math.atan2(ky,kx);tanks[1].tryMove(Math.cos(tanks[1].angle)*tanks[1].spd*dt,Math.sin(tanks[1].angle)*tanks[1].spd*dt);}
@@ -977,7 +976,6 @@ function update(dt){
 
   for(const t of tanks)if(t)t.update(dt);
 
-  // Bullets (физика только у хоста в онлайне, у всех в оффлайне)
   const isPhysics=!onlineMode||isHost;
   if(isPhysics){
     for(const b of bullets){
@@ -1002,13 +1000,24 @@ function update(dt){
       }
     }
     bullets=bullets.filter(b=>b.alive);
+    if(isHost){
+      for(const b of bullets){
+        if(b.alive&&b.fbid&&roomRef){
+          roomRef.child('bullets/'+b.fbid).update({
+            x:Math.round(b.x),y:Math.round(b.y),alive:true,age:b.age
+          });
+        }
+        if(!b.alive&&b.fbid&&roomRef){
+          roomRef.child('bullets/'+b.fbid).remove();
+          b.fbid='';
+        }
+      }
+    }
   } else {
-    // Не-хост: обновляем трейл визуально но не считает коллизии
     for(const b of bullets){b.trail.push({x:b.x,y:b.y});if(b.trail.length>8)b.trail.shift();b.x+=b.vx*dt;b.y+=b.vy*dt;b.age+=dt;}
     bullets=bullets.filter(b=>b.age<5);
   }
 
-  // Bonus pickups
   if(isPhysics){
     for(const bo of bonusItems){
       if(!bo.alive)continue;bo.age+=dt;bo.bob+=dt;
@@ -1033,17 +1042,14 @@ function update(dt){
   updateMines(dt);
   tryRandomEvent();updateWeather(dt);
 
-  // Shake
   if(shakeTimer>0){shakeTimer-=dt;const s=shakeTimer*8;canvas.style.transform=`translate(${(Math.random()-.5)*s}px,${(Math.random()-.5)*s}px)`;if(shakeTimer<=0)canvas.style.transform='';}
   if(quakeTimer>0){quakeTimer-=dt;if(Math.random()<0.12)shake(0.4);}
 
   for(const ft of floatingTexts){ft.y+=ft.vy*dt;ft.life-=dt;}floatingTexts=floatingTexts.filter(f=>f.life>0);
   for(const p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=0.93;p.vy*=0.93;p.vy+=p.grav*dt;p.life-=dt;}particles=particles.filter(p=>p.life>0);
 
-  // Firebase upload
   if(onlineMode){
     fbUploadMe(dt);
-    // Ping display
     const pd=document.getElementById('pingdot'),pi=document.getElementById('ping-disp');
     if(pd){pd.className='ping-dot'+(fbPing>200?' bad':'');pi.textContent=fbPing?fbPing+'ms':'';}
   }
@@ -1056,9 +1062,6 @@ function applyJoy(pidx,dt){
   if(sj?.active){t.shoot();if(onlineMode&&roomRef)fbShotEvent(t);}
 }
 
-// ══════════════════════════════════════════════════════════
-//  RENDER
-// ══════════════════════════════════════════════════════════
 function render(){
   const W=canvas.width,H=canvas.height;
   ctx.fillStyle='#060810';ctx.fillRect(0,0,W,H);
@@ -1067,14 +1070,12 @@ function render(){
   for(let x=0;x<W;x+=TILE){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
   for(let y=0;y<H;y+=TILE){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
 
-  // Map
   for(let y=0;y<mapH;y++) for(let x=0;x<mapW;x++){
     const cell=mapData[y][x];if(cell.type==='empty')continue;const px=x*TILE,py=y*TILE;
     if(cell.type==='steel'){const g=ctx.createLinearGradient(px,py,px+TILE,py+TILE);g.addColorStop(0,'#1c2d42');g.addColorStop(1,'#111e2e');ctx.fillStyle=g;ctx.fillRect(px,py,TILE,TILE);ctx.strokeStyle='#283e58';ctx.lineWidth=1;ctx.strokeRect(px+1,py+1,TILE-2,TILE-2);ctx.fillStyle='#293f59';ctx.fillRect(px+2,py+2,4,4);ctx.fillRect(px+TILE-6,py+2,4,4);ctx.fillRect(px+2,py+TILE-6,4,4);ctx.fillRect(px+TILE-6,py+TILE-6,4,4);ctx.fillStyle='rgba(255,255,255,0.03)';ctx.fillRect(px,py,TILE,TILE/3);}
     else if(cell.type==='brick'){const r2=cell.hp/WALL_HP;ctx.fillStyle=`rgb(${Math.floor(125*r2+35)},${Math.floor(52*r2+12)},12)`;ctx.fillRect(px,py,TILE,TILE);ctx.fillStyle='rgba(0,0,0,0.38)';ctx.fillRect(px,py+TILE/2-1,TILE,2);ctx.fillRect(px+TILE/2-1,py,2,TILE/2);ctx.fillRect(px+TILE/4-1,py+TILE/2,2,TILE/2);ctx.fillRect(px+3*TILE/4-1,py+TILE/2,2,TILE/2);ctx.fillStyle='rgba(255,255,255,0.07)';ctx.fillRect(px,py,TILE,3);if(cell.hp<WALL_HP){ctx.strokeStyle='rgba(0,0,0,0.65)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(px+9,py+4);ctx.lineTo(px+23,py+29);ctx.moveTo(px+31,py+11);ctx.lineTo(px+17,py+38);ctx.stroke();}}
   }
 
-  // Bonuses
   for(const b of bonusItems){
     if(!b.alive)continue;const bob=Math.sin(b.bob*3)*4,pulse=Math.sin(b.bob*5)*0.18+0.82;
     ctx.save();ctx.globalAlpha=pulse;ctx.translate(b.x,b.y+bob);ctx.rotate(b.bob*1.4);
@@ -1086,7 +1087,6 @@ function render(){
 
   drawMines();
 
-  // Bullets
   for(const b of bullets){
     for(let i=0;i<b.trail.length;i++){ctx.globalAlpha=(i/b.trail.length)*0.45;ctx.fillStyle='#ffee44';ctx.beginPath();ctx.arc(b.trail[i].x,b.trail[i].y,3,0,Math.PI*2);ctx.fill();}
     ctx.globalAlpha=1;ctx.shadowColor='#ffcc00';ctx.shadowBlur=14;ctx.fillStyle='#ffff99';ctx.beginPath();ctx.arc(b.x,b.y,4,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
@@ -1103,7 +1103,6 @@ function render(){
 
   for(const jj of Object.values(joysticks))jj.draw();
 
-  // Bonus timer bars
   for(let i=0;i<tanks.length;i++){const t=tanks[i];if(!t)continue;
     if(t.bonus&&t.alive){const bx=i===0?12:W-112,by=50,ratio=t.bTimer/BONUS_DUR;ctx.fillStyle=B_COL[t.bonus]+'33';ctx.fillRect(bx,by,100,5);ctx.fillStyle=B_COL[t.bonus];ctx.fillRect(bx,by,100*ratio,5);}
     if(t.frozen&&t.alive){const bx=i===0?12:W-112;ctx.fillStyle='#88ddff33';ctx.fillRect(bx,58,100,4);ctx.fillStyle='#88ddff';ctx.fillRect(bx,58,100*(t.frozenT/3.5),4);}
@@ -1115,13 +1114,9 @@ function render(){
   if(stb<=5&&(!onlineMode||isHost)){ctx.save();ctx.fillStyle=`rgba(255,215,0,${0.5+0.4*Math.sin(Date.now()*0.012)})`;ctx.font='bold 11px Courier New';ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText(`🎁 БОНУС ЧЕРЕЗ ${stb}с`,W/2,48);ctx.restore();}
   if(weatherType==='fog'){ctx.save();ctx.fillStyle='rgba(170,200,230,0.45)';ctx.font='bold 10px Courier New';ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText('☁ ТУМАН',W/2,62);ctx.restore();}
 
-  // Онлайн-код комнаты
   if(onlineMode&&roomCode){ctx.save();ctx.fillStyle='rgba(204,68,255,0.4)';ctx.font='bold 9px Courier New';ctx.textAlign='right';ctx.textBaseline='top';ctx.fillText('КОМНАТА: '+roomCode,W-10,48);ctx.restore();}
 }
 
-// ══════════════════════════════════════════════════════════
-//  GAME OVER
-// ══════════════════════════════════════════════════════════
 function checkGameOver(){
   const alive=tanks.filter(t=>t&&t.lives>0);
   if(alive.length>1)return;
@@ -1154,4 +1149,4 @@ function restartGame(){
 window.addEventListener('resize',()=>{if((gameState==='playing'||gameState==='over')&&canvas){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}});
 </script>
 </body>
-</html>
+  </html>

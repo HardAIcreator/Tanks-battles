@@ -1,3 +1,4 @@
+// Update: 1.1
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open('tanks-v1').then((cache) => {

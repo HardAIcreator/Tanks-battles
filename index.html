@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
-  }
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Танки: Битва Бонусов</title>
@@ -2393,5 +2388,12 @@ window.addEventListener('resize',()=>{
   }
 });
 </script>
+  <script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js')
+    .then(() => console.log('SW OK'))
+    .catch(err => console.log('SW ERROR', err));
+}
+  </script> 
 </body>
 </html>

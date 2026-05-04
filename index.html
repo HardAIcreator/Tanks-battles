@@ -2395,7 +2395,6 @@ if ('serviceWorker' in navigator) {
     .then(() => console.log('SW OK'))
     .catch(err => console.log('SW ERROR', err));
 }
-document.body.innerHTML += '<div style="position:fixed;top:0;background:black;color:white;z-index:9999;">SW: '+navigator.serviceWorker.controller+'</div>';
 </script> 
 </body>
 </html>

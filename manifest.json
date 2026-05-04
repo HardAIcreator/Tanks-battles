@@ -2,11 +2,16 @@
   "short_name": "Танки",
   "name": "Танки: Битва Бонусов",
   "icons": [
-    {
-      "src": "icon.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "any maskable"
+  {
+    "src": "icon.png",
+    "type": "image/png",
+    "sizes": "192x192"
+  },
+  {
+    "src": "icon.png",
+    "type": "image/png",
+    "sizes": "512x512",
+    "purpose": "any maskable"
     }
   ],
   "start_url": "/Tanks-battles/",

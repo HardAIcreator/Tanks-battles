@@ -1,18 +1,21 @@
+const CACHE_NAME = 'tanks-v1';
+const ASSETS = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icon.png',
+];
+
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open('tanks-v1').then((cache) => {
-            return cache.addAll([
-        './',
-        './index.html',
-        './manifest.json',
-        './icon.png'
-      ]).catch(err => console.log('Ошибка кэширования'));
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
   );
 });
 
 self.addEventListener('fetch', (e) => {
   e.respondWith(
-    fetch(e.request).catch(() => caches.match(e.request))
+    caches.match(e.request).then((response) => {
+      return response || fetch(e.request);
+    })
   );
 });

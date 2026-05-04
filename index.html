@@ -2388,27 +2388,6 @@ window.addEventListener('resize',()=>{
     canvas.width=window.innerWidth;canvas.height=window.innerHeight;
   }
 });
-</script>
-  <script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js')
-    .then(() => console.log('SW OK'))
-    .catch(err => console.log('SW ERROR', err));
-}
-    setTimeout(() => {
-  const div = document.createElement('div');
-  div.style.position = 'fixed';
-  div.style.top = '0';
-  div.style.left = '0';
-  div.style.width = '100%';
-  div.style.background = 'black';
-  div.style.color = 'white';
-  div.style.zIndex = '99999';
-  div.style.fontSize = '12px';
-  div.style.padding = '5px';
-  div.textContent = 'SW: ' + navigator.serviceWorker.controller;
-  document.body.appendChild(div);
-}, 2000);
 </script> 
 </body>
 </html>

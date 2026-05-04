@@ -9,7 +9,7 @@
       "purpose": "any maskable"
     }
   ],
-  "start_url": "/Tanks-battles/index.html",
+  "start_url": "/Tanks-battles/",
   "display": "standalone",
   "background_color": "#0a0a0f",
   "theme_color": "#00e5ff",

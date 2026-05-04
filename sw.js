@@ -1,11 +1,11 @@
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open('tanks-v1').then((cache) => {
-      return cache.addAll([
-        '/Tanks-battles/',
-        '/Tanks-battles/index.html',
-        '/Tanks-battles/manifest.json',
-        '/Tanks-battles/icon.png'
+            return cache.addAll([
+        './',
+        './index.html',
+        './manifest.json',
+        './icon.png'
       ]).catch(err => console.log('Ошибка кэширования'));
     })
   );
